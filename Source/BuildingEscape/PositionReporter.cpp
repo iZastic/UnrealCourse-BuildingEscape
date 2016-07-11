@@ -22,6 +22,9 @@ void UPositionReporter::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+	FString OwnerName = GetOwner()->GetName();
+	FString OwnerPosition = GetOwner()->GetTransform().GetLocation().ToString();
+	UE_LOG(LogTemp, Warning, TEXT("%s is at %s"), *OwnerName, *OwnerPosition);
 	
 }
 
