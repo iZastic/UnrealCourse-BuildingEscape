@@ -22,6 +22,7 @@ void UOpenDoor::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+	ActorsThatCanActivate.Add(GetWorld()->GetFirstPlayerController()->GetPawn());
 }
 
 
@@ -30,39 +31,61 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
-	// Is the player or object on the pressure plate
-	if (PressurePlate->IsOverlappingActor(GetWorld()->GetFirstPlayerController()->GetPawn()))
+	bIsPressurePlateActived = false;
+	// Set pressure plate activated if any actors that can activate are overlapping
+	for (AActor* Actor : ActorsThatCanActivate)
 	{
-		FRotator OwnerRotator = GetOwner()->GetActorRotation();
-		FRotator DoorOpenRotator(0.f, DoorOpenAngle, 0.f);
-		// If the door is not in the fully open rotation
-		if (!OwnerRotator.Equals(DoorOpenRotator))
+		if (PressurePlate->IsOverlappingActor(Actor))
 		{
-			// Rotate the door towards the open rotation
-			GetOwner()->SetActorRotation(OwnerRotator.Add(0.f, -180 * DeltaTime, 0.f));
-			
-			// When the door is past the open angle
-			if (OwnerRotator.Yaw > 0 && OwnerRotator.Yaw < DoorOpenAngle)
-			{
-				GetOwner()->SetActorRotation(DoorOpenRotator);
-			}
+			bIsPressurePlateActived = true;
+			break;
 		}
+	}
+
+	if (bIsPressurePlateActived)
+	{
+		OpenDoor(DeltaTime);
 	}
 	else
 	{
-		FRotator OwnerRotator = GetOwner()->GetActorRotation();
-		FRotator DoorCloseRotator(0.f, DoorCloseAngle, 0.f);
-		// If the door is not in the fully closed rotation
-		if (!OwnerRotator.Equals(DoorCloseRotator))
+		CloseDoor(DeltaTime);
+	}
+}
+
+
+void UOpenDoor::CloseDoor(float DeltaTime)
+{
+	FRotator OwnerRotator = GetOwner()->GetActorRotation();
+	FRotator DoorCloseRotator(0.f, DoorCloseAngle, 0.f);
+	// If the door is not in the fully closed rotation
+	if (!OwnerRotator.Equals(DoorCloseRotator))
+	{
+		// Rotate the door towards the closed rotation
+		GetOwner()->SetActorRotation(OwnerRotator.Add(0.f, 270.f * DeltaTime, 0.f));
+
+		// When the door is past the closed angle
+		if (OwnerRotator.Yaw >= DoorCloseAngle)
 		{
-			// Rotate the door towards the closed rotation
-			GetOwner()->SetActorRotation(OwnerRotator.Add(0.f, 270.f * DeltaTime, 0.f));
-			
-			// When the door is past the closed angle
-			if (OwnerRotator.Yaw >= DoorCloseAngle)
-			{
-				GetOwner()->SetActorRotation(DoorCloseRotator);
-			}
+			GetOwner()->SetActorRotation(DoorCloseRotator);
+		}
+	}
+}
+
+
+void UOpenDoor::OpenDoor(float DeltaTime)
+{
+	FRotator OwnerRotator = GetOwner()->GetActorRotation();
+	FRotator DoorOpenRotator(0.f, DoorOpenAngle, 0.f);
+	// If the door is not in the fully open rotation
+	if (!OwnerRotator.Equals(DoorOpenRotator))
+	{
+		// Rotate the door towards the open rotation
+		GetOwner()->SetActorRotation(OwnerRotator.Add(0.f, -180 * DeltaTime, 0.f));
+
+		// When the door is past the open angle
+		if (OwnerRotator.Yaw > 0 && OwnerRotator.Yaw < DoorOpenAngle)
+		{
+			GetOwner()->SetActorRotation(DoorOpenRotator);
 		}
 	}
 }
