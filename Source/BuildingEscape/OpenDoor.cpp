@@ -31,12 +31,22 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
-	if (PressurePlate->IsOverlappingActor(ActorThatCanActivate))
+	if (PressurePlate->IsOverlappingActor(GetWorld()->GetFirstPlayerController()->GetPawn()))
 	{
 		// Check if the door is not considered open
-		if (!GetOwner()->GetActorRotation().Equals(MyDoorOpenRotator, 10.f)) {
+		if (!GetOwner()->GetActorRotation().Equals(FRotator(0.f, DoorOpenAngle, 0.f), 10.f)) {
 			// Rotate the door towards the open rotation
 			GetOwner()->SetActorRotation(GetOwner()->GetActorRotation().Add(0.f, -90.f * DeltaTime, 0.f));
+			// Log the values for debugging
+			FString OwnerRotation = GetOwner()->GetActorRotation().ToString();
+			UE_LOG(LogTemp, Warning, TEXT("Door rotation is %s"), *OwnerRotation);
+		}
+	}
+	else
+	{
+		if (!GetOwner()->GetActorRotation().Equals(FRotator(0.f, DoorCloseAngle, 0.f), 10.f)) {
+			// Rotate the door towards the open rotation
+			GetOwner()->SetActorRotation(GetOwner()->GetActorRotation().Add(0.f, 90.f * DeltaTime, 0.f));
 			// Log the values for debugging
 			FString OwnerRotation = GetOwner()->GetActorRotation().ToString();
 			UE_LOG(LogTemp, Warning, TEXT("Door rotation is %s"), *OwnerRotation);
