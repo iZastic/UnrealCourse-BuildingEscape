@@ -30,6 +30,4 @@ private:
 	ATriggerVolume* PressurePlate;
 	UPROPERTY(EditAnywhere)
 	AActor* ActorThatCanActivate;
-
-	FRotator MyDoorOpenRotator;
 };
