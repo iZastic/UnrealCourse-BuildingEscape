@@ -26,6 +26,8 @@ private:
 	float DoorOpenAngle = 90.f;
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* PressurePlate;
+	UPROPERTY(EditAnywhere)
+	AActor* ActorThatCanActivate;
 
 	FRotator MyDoorOpenRotator;
 };
