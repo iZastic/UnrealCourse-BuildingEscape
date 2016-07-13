@@ -92,7 +92,7 @@ void UGrabber::Grab()
 	FHitResult HitResult = GetFirstPhysicsBodyInReach();
 	if (HitResult.bBlockingHit) {
 		// Attach physics handle
-		PhysicsHandle->GrabComponent(HitResult.GetComponent(), NAME_None, HitResult.ImpactPoint, false);
+		PhysicsHandle->GrabComponent(HitResult.GetComponent(), NAME_None, HitResult.ImpactPoint, true);
 	}
 }
 
