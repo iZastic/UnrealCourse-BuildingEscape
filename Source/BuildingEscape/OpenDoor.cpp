@@ -11,8 +11,6 @@ UOpenDoor::UOpenDoor()
 	// off to improve performance if you don't need them.
 	bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
@@ -20,6 +18,11 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (!PressurePlate)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Trigger Volume not found on %s, please select one!"), *GetOwner()->GetName());
+	}
 }
 
 
@@ -60,6 +63,8 @@ void UOpenDoor::CloseDoor(float DeltaTime)
 
 float UOpenDoor::GetTotalMassOnPressurePlate()
 {
+	if (!PressurePlate) return 0.f;
+
 	TArray<AActor*> PressurePlateActors;
 	PressurePlate->GetOverlappingActors(PressurePlateActors);
 

@@ -27,7 +27,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	float DoorCloseAngle = 180.f;
 	UPROPERTY(EditAnywhere)
-	ATriggerVolume* PressurePlate;
+	ATriggerVolume* PressurePlate = nullptr;
 	UPROPERTY(EditAnywhere)
 	float MassToOpenDoor = 40.f;
 
