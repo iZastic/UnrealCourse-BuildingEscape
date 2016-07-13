@@ -20,9 +20,6 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	ActorsThatCanActivate.Add(GetWorld()->GetFirstPlayerController()->GetPawn());
 }
 
 
@@ -31,18 +28,7 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
-	bIsPressurePlateActived = false;
-	// Set pressure plate activated if any actors that can activate are overlapping
-	for (AActor* Actor : ActorsThatCanActivate)
-	{
-		if (PressurePlate->IsOverlappingActor(Actor))
-		{
-			bIsPressurePlateActived = true;
-			break;
-		}
-	}
-
-	if (bIsPressurePlateActived)
+	if (GetTotalMassOnPressurePlate() >= MassToOpenDoor)
 	{
 		OpenDoor(DeltaTime);
 	}
@@ -71,6 +57,20 @@ void UOpenDoor::CloseDoor(float DeltaTime)
 	}
 }
 
+
+float UOpenDoor::GetTotalMassOnPressurePlate()
+{
+	TArray<AActor*> PressurePlateActors;
+	PressurePlate->GetOverlappingActors(PressurePlateActors);
+
+	float TotalMass = 0.f;
+	for (AActor* Actor : PressurePlateActors)
+	{
+		TotalMass += Actor->GetRootPrimitiveComponent()->GetMass();
+	}
+
+	return TotalMass;
+}
 
 void UOpenDoor::OpenDoor(float DeltaTime)
 {

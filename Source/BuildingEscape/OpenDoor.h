@@ -29,9 +29,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* PressurePlate;
 	UPROPERTY(EditAnywhere)
-	TArray<AActor*> ActorsThatCanActivate;
+	float MassToOpenDoor = 40.f;
 
-	bool bIsPressurePlateActived = false;
+	float GetTotalMassOnPressurePlate();
 	void OpenDoor(float DeltaTime);
 	void CloseDoor(float DeltaTime);
 };
