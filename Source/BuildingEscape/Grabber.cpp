@@ -31,6 +31,27 @@ void UGrabber::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
-	// ...
+	// Get the player controller
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	// Get the player view point
+	FVector PlayerLocation;
+	FRotator PlayerRotation;
+	PlayerController->GetPlayerViewPoint(PlayerLocation, PlayerRotation);
+	// Log view point info for debugging
+	UE_LOG(LogTemp, Warning, TEXT("Location is %s. Rotation is %s."), *PlayerLocation.ToString(), *PlayerRotation.ToString());
+
+	FVector EndVector = PlayerLocation + PlayerRotation.Vector() * (MaxReach * 100.f);
+	DrawDebugDirectionalArrow(
+		GetWorld(), 
+		PlayerLocation, 
+		EndVector, 
+		5.f, 
+		FColor(255, 0, 0)
+	);
+
+	// TODO Raycast to the reach distance
+
+	// TODO Find what we hit
 }
 
+ 
