@@ -33,6 +33,8 @@ private:
 	void SetupPhysicsHandle();
 	// Find and setup attached Input Component and bind actions
 	void SetupInputComponent();
+	// Get the start and end vectors of the reach line
+	void GetReachLineVectors(FVector&, FVector&) const;
 	// Find the first physics body within MaxReach distance
 	FHitResult GetFirstPhysicsBodyInReach() const;
 	// Raycast and grab what's in reach

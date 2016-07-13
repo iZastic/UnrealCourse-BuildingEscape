@@ -11,8 +11,6 @@ UGrabber::UGrabber()
 	// off to improve performance if you don't need them.
 	bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
@@ -31,19 +29,11 @@ void UGrabber::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
-	// TODO: Move the object we are holding if physics handle is attached
+	// Move the object we are holding if physics handle is attached
 	if (PhysicsHandle->GrabbedComponent)
 	{
-		// Get the player controller
-		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-
-		// Get the player view point
-		FVector PlayerLocation;
-		FRotator PlayerRotation;
-		PlayerController->GetPlayerViewPoint(PlayerLocation, PlayerRotation);
-
-		// Calculate end location vector using max reach
-		FVector EndLocation = PlayerLocation + PlayerRotation.Vector() * (MaxReach * 100.f);
+		FVector StartLocation, EndLocation;
+		GetReachLineVectors(StartLocation, EndLocation);
 
 		PhysicsHandle->SetTargetLocation(EndLocation);
 	}
@@ -69,7 +59,7 @@ void UGrabber::SetupInputComponent()
 	}
 }
 
-FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
+void UGrabber::GetReachLineVectors(FVector& out_StartLocation, FVector& out_EndLocation) const
 {
 	// Get the player controller
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
@@ -79,14 +69,20 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 	FRotator PlayerRotation;
 	PlayerController->GetPlayerViewPoint(PlayerLocation, PlayerRotation);
 
-	// Calculate end location vector using max reach
-	FVector EndLocation = PlayerLocation + PlayerRotation.Vector() * (MaxReach * 100.f);
+	out_StartLocation = PlayerLocation;
+	out_EndLocation = PlayerLocation + PlayerRotation.Vector() * (MaxReach * 100.f);
+}
+
+FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
+{
+	FVector StartLocation, EndLocation;
+	GetReachLineVectors(StartLocation, EndLocation);
 
 	// Line-trace (Raycast) to the reach distance
 	FHitResult HitResult;
 	FCollisionObjectQueryParams ObjectParams(ECollisionChannel::ECC_PhysicsBody);
 	FCollisionQueryParams QueryParams(FName(""), false, GetOwner());
-	GetWorld()->LineTraceSingleByObjectType(HitResult, PlayerLocation, EndLocation, ObjectParams, QueryParams);
+	GetWorld()->LineTraceSingleByObjectType(HitResult, StartLocation, EndLocation, ObjectParams, QueryParams);
 
 	return HitResult;
 }
@@ -95,14 +91,14 @@ void UGrabber::Grab()
 {
 	FHitResult HitResult = GetFirstPhysicsBodyInReach();
 	if (HitResult.bBlockingHit) {
-		// TODO: Attach physics handle
+		// Attach physics handle
 		PhysicsHandle->GrabComponent(HitResult.GetComponent(), NAME_None, HitResult.ImpactPoint, false);
 	}
 }
 
 void UGrabber::Release()
 {
-	// TODO: Drop object if physics handle is attached
+	// Drop object if physics handle is attached
 	PhysicsHandle->ReleaseComponent();
 }
 
