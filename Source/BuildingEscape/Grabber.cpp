@@ -39,6 +39,7 @@ void UGrabber::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompon
 	}
 }
 
+
 void UGrabber::SetupPhysicsHandle()
 {
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
@@ -46,6 +47,7 @@ void UGrabber::SetupPhysicsHandle()
 		UE_LOG(LogTemp, Error, TEXT("Physics handle not found on %s, please add one!"), *GetOwner()->GetName());
 	}
 }
+
 
 void UGrabber::SetupInputComponent()
 {
@@ -58,6 +60,7 @@ void UGrabber::SetupInputComponent()
 		UE_LOG(LogTemp, Error, TEXT("Input Component not found on %s!"), *GetOwner()->GetName());
 	}
 }
+
 
 void UGrabber::GetReachLineVectors(FVector& out_StartLocation, FVector& out_EndLocation) const
 {
@@ -73,6 +76,7 @@ void UGrabber::GetReachLineVectors(FVector& out_StartLocation, FVector& out_EndL
 	out_EndLocation = PlayerLocation + PlayerRotation.Vector() * (MaxReach * 100.f);
 }
 
+
 FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 {
 	FVector StartLocation, EndLocation;
@@ -86,6 +90,7 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 
 	return HitResult;
 }
+
 
 void UGrabber::Grab()
 {

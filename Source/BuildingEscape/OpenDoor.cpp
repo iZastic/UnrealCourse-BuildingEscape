@@ -77,6 +77,7 @@ float UOpenDoor::GetTotalMassOnPressurePlate()
 	return TotalMass;
 }
 
+
 void UOpenDoor::OpenDoor(float DeltaTime)
 {
 	FRotator OwnerRotator = GetOwner()->GetActorRotation();
