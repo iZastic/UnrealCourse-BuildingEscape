@@ -24,5 +24,19 @@ public:
 private:
 	// Grabber reach length in meters
 	UPROPERTY(EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "5.0", UIMin = "0.0", UIMax = "5.0"))
-	float MaxReach = 1.f;
+	float MaxReach = 2.f;
+
+	UPhysicsHandleComponent* PhysicsHandle = nullptr;
+	UInputComponent* InputComponent = nullptr;
+
+	// Find and setup attached Physics Handle
+	void SetupPhysicsHandle();
+	// Find and setup attached Input Component and bind actions
+	void SetupInputComponent();
+	// Find the first physics body within MaxReach distance
+	FHitResult GetFirstPhysicsBodyInReach() const;
+	// Raycast and grab what's in reach
+	void Grab();
+	// Release what we grabbed
+	void Release();
 };
