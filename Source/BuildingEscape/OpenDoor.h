@@ -37,6 +37,4 @@ private:
 	float MassToOpenDoor = 40.f;
 
 	float GetTotalMassOnPressurePlate();
-	void OpenDoor(float DeltaTime);
-	void CloseDoor(float DeltaTime);
 };
